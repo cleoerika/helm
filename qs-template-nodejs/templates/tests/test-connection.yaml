@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "qs-template-nodejs.fullname" . }}-test-connection"
+  labels:
+    {{- include "qs-template-nodejs.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  imagePullSecrets:
+    - name: docker.hcllabs.net
+  containers:
+    - name: wget
+      image: docker.hcllabs.net/qs/busybox
+      command: ["/bin/sh", "-ec",]
+      args: ["cd /tmp && wget {{ include "qs-template-nodejs.fullname" . }}:{{ .Values.service.port }}"]
+  restartPolicy: Never
